@@ -44,9 +44,9 @@ RUN rpm -qa | sort > /tmp/postbuild-rpms
 RUN cd /tmp && \
 curl -O -L http://luajit.org/download/LuaJIT-${LUAJIT_VERSION}.tar.gz
 RUN cd /tmp && \
-curl -O -L https://www.snort.org/downloads/snort/daq-${DAQ_VERSION}.tar.gz
+curl -O -L http://codemonkey.net/files/snort/daq-${DAQ_VERSION}.tar.gz
 RUN cd /tmp && \
-curl -O -L https://www.snort.org/downloads/snort/snort-${SNORT_VERSION}.tar.gz
+curl -O -L http://codemonkey.net/files/snort/snort-${SNORT_VERSION}.tar.gz
     
 RUN cd /tmp && \
     tar zxvf LuaJIT-${LUAJIT_VERSION}.tar.gz && \
@@ -80,7 +80,7 @@ RUN cd /tmp && \
 
 RUN mkdir -p /opt/pulledpork && \
     cd /opt/pulledpork && \
-    curl -o - -L https://github.com/shirkdog/pulledpork/archive/master.tar.gz |\
+    curl -o - -L https://github.com/shirkdog/pulledpork/archive/c3b9e17ac22839694a6ad6de249ed2cde6df3d2d.tar.gz |\
       tar zxf - --strip-components=1 && \
     chmod 755 pulledpork.pl
 
