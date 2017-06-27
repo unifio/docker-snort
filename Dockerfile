@@ -17,21 +17,29 @@ RUN yum -y install epel-release curl tar perl-LWP-Protocol-https perl-Crypt-SSLe
     grep daq-${DAQ_VERSION}-1.centos7.x86_64.rpm snort_md5s.txt | md5sum -c && \
     grep snort-openappid-${SNORT_VERSION}-1.centos7.x86_64.rpm snort_md5s.txt | md5sum -c && \
     yum -y install daq-${DAQ_VERSION}-1.centos7.x86_64.rpm snort-openappid-${SNORT_VERSION}-1.centos7.x86_64.rpm && \
+    # Configure Pulled Pork
     curl -L -s --output pulledpork-${PULLEDPORK_VERSION}.tar.gz https://github.com/shirkdog/pulledpork/archive/v${PULLEDPORK_VERSION}.tar.gz && \
     tar xzvf pulledpork-${PULLEDPORK_VERSION}.tar.gz -C /usr/local/src && \
     chmod +x /usr/local/src/pulledpork-${PULLEDPORK_VERSION}/pulledpork.pl && \
     ln -s /usr/local/src/pulledpork-${PULLEDPORK_VERSION}/pulledpork.pl \
       /usr/local/bin/pulledpork && \
+    cp -p /usr/local/src/pulledpork-${PULLEDPORK_VERSION}/etc/*.conf /etc/snort && \
+    mkdir /etc/snort/rules/iplists && \
+    touch /etc/snort/rules/iplists/default.blacklist && \
+    touch /etc/snort/rules/iplists/white_list.rules && \
+    touch /etc/snort/rules/local.rules && \
     ln -s /usr/lib64/snort-${SNORT_VERSION}_dynamicengine \
        /usr/local/lib/snort_dynamicengine && \
     ln -s /usr/lib64/snort-${SNORT_VERSION}_dynamicpreprocessor \
        /usr/local/lib/snort_dynamicpreprocessor && \
+    mkdir -p /usr/local/lib/snort_dynamicrules && \
     yum clean all && \
     rm -rf /var/log/* || true && \
     rm -rf /tmp/build && \
     rm -rf /var/tmp/* && \
-    rm -rf /tmp/*
+    rm -rf /tmp/* && \
+    mkdir -p /var/log/snort
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-
+COPY configs/* /etc/snort/
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
